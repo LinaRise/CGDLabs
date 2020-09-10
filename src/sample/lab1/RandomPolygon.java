@@ -27,7 +27,7 @@ public class RandomPolygon {
     return r.nextInt(maxPeekAmount - minPeekAmount) + minPeekAmount;
   }
 
-  public static List<Point2D> generate_polygon() {
+  public static List<Point2D> generatePolygon() {
     int peekAmount = getRandomPeekAmount();
     System.out.println("peekAmpount = "+peekAmount);
     List<Point2D> points = generate_points(peekAmount);
@@ -104,4 +104,52 @@ public class RandomPolygon {
     return pts.remove(new Random().nextInt(pts.size()));
   }
 
+
+  //    Point2D p0 = new Point2D.Double();
+//    double y =  points.stream().mapToDouble(v -> v.getY()).min().orElseThrow(IllegalStateException::new);
+//    System.out.println("yyy = "+y);
+//    List<Point2D> list = points.stream().filter(p -> p.getY() == p0.getY()).collect(Collectors.toList());
+//    double x =  list.stream().mapToDouble(v -> v.getX()).min().orElseThrow(IllegalStateException::new);
+//
+//    p0.setLocation(x,y);
+//    return (a, b) -> (int) angleCompare(p0, a, b);
+
+//    points.sort((a, b) =>angleCompare(p0, a, b));
+//    return points;
+//    final double centerX = center.getX();
+//    final double centerY = center.getY();
+//    System.out.println("Center " + centerX + ";" + centerY);
+//    return (p0, p1) -> {
+//      double angle0 = angleToX(
+//              centerX, centerY, p0.getX(), p0.getY());
+//      System.out.println("angle0 = " + angle0);
+//      System.out.println("point0 = " + p0.getX() + ";" + p0.getY());
+//      double angle1 = angleToX(
+//              centerX, centerY, p1.getX(), p1.getY());
+//      System.out.println("angle1 = " + angle1);
+//      System.out.println("point1 = " + p1.getX() + ";" + p1.getY());
+//
+//
+//      return Double.compare(angle0, angle1);
+
+//    final double centerX = center.getX();
+//    final double centerY = center.getY();
+//    System.out.println("Center " + centerX + ";" + centerY);
+
+//  /**
+//   * Computes the angle, in radians, that the line from (x0,y0) to (x1,y1)
+//   * has to the x axis
+//   *
+//   * @param x0 The x-coordinate of the start point of the line
+//   * @param y0 The y-coordinate of the start point of the line
+//   * @param x1 The x-coordinate of the end point of the line
+//   * @param y1 The y-coordinate of the end point of the line
+//   * @return The angle, in radians, that the line has to the x-axis
+//   */
+//  private static double angleToX(
+//          double x0, double y0, double x1, double y1) {
+//    double dx = x1 - x0;
+//    double dy = y1 - y0;
+//    return Math.atan2(dy, dx);
+//  }
 }
