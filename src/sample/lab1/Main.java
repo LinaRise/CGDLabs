@@ -1,15 +1,11 @@
 package sample.lab1;
 
 import javafx.application.Application;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
@@ -17,8 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -29,14 +23,14 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) {
 
-//кнопка для генерации новой фигуры
+    //кнопка для генерации новой фигуры
     Button generateNewPolygonButton = new Button("Сгенерировать");
     Group root = new Group();
     Scene scene = new Scene(root, stageWidth, stageHeight);
     root.getChildren().add(generateNewPolygonButton);
 
     generateNewPolygonButton.setOnMouseClicked(event -> {
-      //очистка сцены
+              //очистка сцены
               root.getChildren().clear();
               root.getChildren().add(generateNewPolygonButton);
               List<Point2D> listOfPoints = PolygonRandom.generatePolygon();
@@ -74,8 +68,8 @@ public class Main extends Application {
 
                 @Override
                 public void handle(MouseEvent event) {
-//        for (int pointNumber = 0; pointNumber < listOfPoints.size(); pointNumber++) {
 
+                  //проход по всем сторонам и заливка
                   pointNumber++;
                   if (pointNumber < listOfPoints.size() - 1) {
                     double minY = listOfPoints.get(pointNumber + 1).getY();
@@ -156,7 +150,6 @@ public class Main extends Application {
             }
 
     );
-    //генерация точек многоугольника
 
 
     primaryStage.setScene(scene);
