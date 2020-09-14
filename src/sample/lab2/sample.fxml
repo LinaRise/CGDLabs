@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.lab2.Controller">
+   <children>
+      <SplitPane fx:id="splitPane" dividerPositions="0.7581453634085213" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane fx:id="coordinatesPane" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="600.0">
+               <children>
+                  <Line fx:id="yAxis" endX="300.0" endY="600.0" startX="300.0" />
+                  <Line endX="600.0" endY="300.0" startY="300.0" fx:id="xAxis" />
+                  <StackPane prefHeight="150.0" prefWidth="200.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="100.0">
+               <children>
+                  <Pane fx:id="controlPane" prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="angleTF" layoutX="12.0" layoutY="44.0" promptText="Угол" />
+                        <TextField layoutX="16.0" layoutY="212.0" promptText="x" fx:id="xTF" onKeyTyped="#xTFTyped"/>
+                        <TextField fx:id="yTF" layoutX="17.0" layoutY="270.0" promptText="y" onKeyTyped="#yTFTyped"/>
+                        <Button fx:id="rotateBtn" layoutX="56.0" layoutY="107.0" mnemonicParsing="false" text="Повернуть" />
+                        <Button fx:id="moveBtn" layoutX="46.0" layoutY="337.0" mnemonicParsing="false" text="Переместить" textAlignment="CENTER" />
+                        <Button fx:id="generateBtn" layoutX="41.0" layoutY="505.0" mnemonicParsing="false" text="Сгенерировать" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
