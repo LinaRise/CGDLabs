@@ -57,11 +57,10 @@ public class Controller extends Application {
   List<Point2D> listOfPoints = new ArrayList<>();
 
 
-
   public void xTFTyped(javafx.scene.input.KeyEvent keyEvent) {
-    final int maxCharacter=4;
+    final int maxCharacter = 4;
     String key = keyEvent.getCharacter();
-    if((!key.isEmpty() && (!Character.isDigit(key.charAt(0)) && !key.equals("-"))|| (xTF.getText().length()>=maxCharacter) )){
+    if ((!key.isEmpty() && (!Character.isDigit(key.charAt(0)) && !key.equals("-")) || (xTF.getText().length() >= maxCharacter))) {
       Toolkit tk = Toolkit.getDefaultToolkit();
       tk.beep();
       keyEvent.consume();
@@ -69,9 +68,9 @@ public class Controller extends Application {
   }
 
   public void yTFTyped(javafx.scene.input.KeyEvent keyEvent) {
-    final int maxCharacter=4;
+    final int maxCharacter = 4;
     String key = keyEvent.getCharacter();
-    if((!key.isEmpty() && (!Character.isDigit(key.charAt(0)) && !key.equals("-"))|| (yTF.getText().length()>=maxCharacter) )){
+    if ((!key.isEmpty() && (!Character.isDigit(key.charAt(0)) && !key.equals("-")) || (yTF.getText().length() >= maxCharacter))) {
       Toolkit tk = Toolkit.getDefaultToolkit();
       tk.beep();
       keyEvent.consume();
@@ -82,14 +81,12 @@ public class Controller extends Application {
   Polygon drawPolygon() {
 
     coordinatesPane.getChildren().clear();
-
     Polygon polygon = new Polygon();
     polygon.setStroke(Color.BLACK);
     polygon.setFill(Color.TRANSPARENT);
     for (Point2D listOfPoint : listOfPoints) {
       polygon.getPoints().addAll(listOfPoint.getX(), listOfPoint.getY());
     }
-
     coordinatesPane.getChildren().addAll(xAxis, yAxis, polygon);
     return polygon;
 
@@ -103,17 +100,29 @@ public class Controller extends Application {
 
 
   void rotateBtnOnClick() {
+    if (!angleTF.getText().isEmpty() && angleTF.getText() != null) {
+      listOfPoints = Movement.rotateFigure(listOfPoints, Integer.parseInt(angleTF.getText()));
+      drawPolygon();
+    } else {
+      String errorMessage = "Пожалуйста, введите корректные значения угла и сгенерируйте фигуру";
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Ошибка ");
+      alert.setHeaderText("Неправильный ввод");
+      alert.setContentText(errorMessage);
+
+      alert.showAndWait();
+
+    }
 
   }
 
 
   void moveBtnOnClick() {
-    if(!xTF.getText().isEmpty() && !yTF.getText().isEmpty()&&
-    xTF.getText()!=null && yTF.getText()!=null && listOfPoints!=null) {
+    if (!xTF.getText().isEmpty() && !yTF.getText().isEmpty() &&
+            xTF.getText() != null && yTF.getText() != null && listOfPoints != null) {
       listOfPoints = Movement.moveFigure(listOfPoints, Integer.parseInt(xTF.getText()), Integer.parseInt(yTF.getText()));
       drawPolygon();
-    }
-    else {
+    } else {
       String errorMessage = "Пожалуйста, введите корректные значения и сгенерируйте фигуру";
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Ошибка ");
@@ -130,7 +139,7 @@ public class Controller extends Application {
   void initialize() {
 
     splitPane.setDividerPositions(0.75);
-    SplitPane.Divider divider  = splitPane.getDividers().get(0);
+    SplitPane.Divider divider = splitPane.getDividers().get(0);
     divider.positionProperty().addListener(new ChangeListener<Number>() {
       @Override
       public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -143,6 +152,8 @@ public class Controller extends Application {
     });
 
     moveBtn.setOnAction(event -> moveBtnOnClick());
+
+    rotateBtn.setOnAction(event -> rotateBtnOnClick());
 
 
   }
