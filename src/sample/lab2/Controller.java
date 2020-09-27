@@ -57,6 +57,7 @@ public class Controller extends Application {
   List<Point2D> listOfPoints = new ArrayList<>();
 
 
+  //проверка на ввод в поле для смещения по X
   public void xTFTyped(javafx.scene.input.KeyEvent keyEvent) {
     final int maxCharacter = 4;
     String key = keyEvent.getCharacter();
@@ -66,7 +67,7 @@ public class Controller extends Application {
       keyEvent.consume();
     }
   }
-
+  //проверка на ввод в поле для смещения по Y
   public void yTFTyped(javafx.scene.input.KeyEvent keyEvent) {
     final int maxCharacter = 4;
     String key = keyEvent.getCharacter();
@@ -78,6 +79,7 @@ public class Controller extends Application {
   }
 
 
+  //отрисовка полигона
   Polygon drawPolygon() {
 
     coordinatesPane.getChildren().clear();
@@ -85,22 +87,23 @@ public class Controller extends Application {
     polygon.setStroke(Color.BLACK);
     polygon.setFill(Color.TRANSPARENT);
     for (Point2D listOfPoint : listOfPoints) {
-      polygon.getPoints().addAll(listOfPoint.getX(), listOfPoint.getY());
+      //прибавим значения, чтобы корректо отобразтить мнооугольгик на холсте
+      polygon.getPoints().addAll(listOfPoint.getX()+Test2.coordWidth/2, listOfPoint.getY()+Test2.coordHeight/2);
     }
     coordinatesPane.getChildren().addAll(xAxis, yAxis, polygon);
     return polygon;
 
   }
 
-
+//метод, отвечающий за нажатие на конопку "Сгенерировать"
   void generateBtnOnClik() {
     listOfPoints = PolygonGenerator.generatePolygon();
     drawPolygon();
   }
 
-
+  //метод, отвечающий за нажатие на конопку "Повернуть"
   void rotateBtnOnClick() {
-    if (!angleTF.getText().isEmpty() && angleTF.getText() != null) {
+    if (!angleTF.getText().isEmpty() && angleTF.getText() != null &&  listOfPoints != null && listOfPoints.size()>0) {
       listOfPoints = Movement.rotateFigure(listOfPoints, Integer.parseInt(angleTF.getText()));
       drawPolygon();
     } else {
@@ -116,14 +119,14 @@ public class Controller extends Application {
 
   }
 
-
+  //метод, отвечающий за нажатие на конопку "Переместить"
   void moveBtnOnClick() {
     if (!xTF.getText().isEmpty() && !yTF.getText().isEmpty() &&
-            xTF.getText() != null && yTF.getText() != null && listOfPoints != null) {
+            xTF.getText() != null && yTF.getText() != null && listOfPoints != null && listOfPoints.size()>0) {
       listOfPoints = Movement.moveFigure(listOfPoints, Integer.parseInt(xTF.getText()), Integer.parseInt(yTF.getText()));
       drawPolygon();
     } else {
-      String errorMessage = "Пожалуйста, введите корректные значения и сгенерируйте фигуру";
+      String errorMessage = "Пожалуйста, введите корректные значения для перемещения и сгенерируйте фигуру";
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Ошибка ");
       alert.setHeaderText("Неправильный ввод");
@@ -140,12 +143,7 @@ public class Controller extends Application {
 
     splitPane.setDividerPositions(0.75);
     SplitPane.Divider divider = splitPane.getDividers().get(0);
-    divider.positionProperty().addListener(new ChangeListener<Number>() {
-      @Override
-      public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        divider.setPosition(0.75);
-      }
-    });
+    divider.positionProperty().addListener((observable, oldValue, newValue) -> divider.setPosition(0.75));
 
     generateBtn.setOnAction(event -> {
       generateBtnOnClik();

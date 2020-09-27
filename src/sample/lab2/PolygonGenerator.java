@@ -1,12 +1,10 @@
 package sample.lab2;
 
-import sample.lab1.Main;
-
 import java.awt.geom.Point2D;
 import java.util.*;
 
 //моя реализация
-public class PolygonGenerator {
+class PolygonGenerator {
 
   //генерируем колиечство вершин
   static private int getRandomPeekAmount() {
@@ -19,8 +17,8 @@ public class PolygonGenerator {
   }
 
 
-//генерация полигона
- public static List<Point2D> generatePolygon() {
+  //генерация полигона
+  static List<Point2D> generatePolygon() {
     List<Point2D> points = new ArrayList<>();
     int peeksAmount = getRandomPeekAmount();
     System.out.println("peeksAmount = " + peeksAmount);
@@ -34,10 +32,12 @@ public class PolygonGenerator {
 
     for (double angle : angles) {
       while (true) {
-        double vx = Math.random() * Math.sqrt(Math.pow(Test2.stageHeight / 4, 2) + Math.pow(Test2.stageWidth / 4, 2));
-        double vy = Math.random() * (Test2.stageHeight / 2);
-        Point2D point2D = new Point2D.Double(300 + (int) (Math.cos(angle) * vx), 300 + (int) (Math.sin(angle) * vy));
-        if (!points.contains(point2D) && point2D.getY() > 0 && point2D.getY() < 600 && point2D.getX() > 0 && point2D.getX() < 600) {
+        double vx = Math.random() * Math.sqrt(Math.pow(Test2.coordWidth / 2, 2) + Math.pow(Test2.coordWidth / 2, 2));
+        double vy = Math.random() * Math.sqrt(Math.pow(Test2.coordHeight / 2, 2) + Math.pow(Test2.coordHeight / 2, 2));
+//        Point2D point2D = new Point2D.Double(300 + (int) (Math.cos(angle) * vx), 300 + (int) (Math.sin(angle) * vy));
+        Point2D point2D = new Point2D.Double((int) (Math.cos(angle) * vx), (int) (Math.sin(angle) * vy));
+        //выполянется проверка на то, что многоугольник будет виден целиком на холсте при первичной генерации центр (300;300)
+        if (!points.contains(point2D) && (point2D.getY() + Test2.coordHeight / 2) > 0 && (point2D.getY() + Test2.coordHeight / 2) < Test2.coordHeight && (point2D.getX() + Test2.coordWidth / 2) > 0 && (point2D.getX() + Test2.coordWidth / 2) < Test2.coordWidth) {
           points.add(point2D);
           System.out.println(point2D.getX() + ";" + point2D.getY());
           break;
@@ -51,7 +51,7 @@ public class PolygonGenerator {
     Point2D lowest = new Point2D.Double(x, y);
     System.out.println("Самая нижняя = " + lowest);
 
-
+//сортируем точки
     points.sort((byAngleComparator(lowest)));
     System.out.println("Отсортированное");
     for (int i = 0; i < points.size(); i++) {
@@ -61,26 +61,28 @@ public class PolygonGenerator {
     return points;
   }
 
-//для сортировки точек
+  //для сортировки точек
   private static Comparator<Point2D> byAngleComparator(
           Point2D lowest) {
 
     return (p0, p1) -> (int) angleCompare(lowest, p0, p1);
   }
 
-
- private static double angleCompare(Point2D lowestRightPoint, Point2D point2, Point2D point3) {
+  //сравнение углов
+  private static double angleCompare(Point2D lowestRightPoint, Point2D point2, Point2D point3) {
     double left = isLeft(lowestRightPoint, point2, point3);
     if (left == 0) return distCompare(lowestRightPoint, point2, point3);
     return left;
   }
 
- private static double isLeft(Point2D lowestRightPoint, Point2D point1, Point2D point2) {
+
+  private static double isLeft(Point2D lowestRightPoint, Point2D point1, Point2D point2) {
     return (point1.getX() - lowestRightPoint.getX()) * (point2.getY() - lowestRightPoint.getY()) -
             (point2.getX() - lowestRightPoint.getX()) * (point1.getY() - lowestRightPoint.getY());
   }
 
- private static double distCompare(Point2D lowestRightPoint, Point2D point1, Point2D point2) {
+  //сравнение расстояний
+  private static double distCompare(Point2D lowestRightPoint, Point2D point1, Point2D point2) {
     double distA = Math.pow(lowestRightPoint.getX() - point1.getX(), 2) + Math.pow(lowestRightPoint.getY() - point1.getY(), 2);
     double distB = Math.pow(lowestRightPoint.getX() - point2.getX(), 2) + Math.pow(lowestRightPoint.getY() - point2.getY(), 2);
     return distA - distB;
