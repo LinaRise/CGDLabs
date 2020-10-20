@@ -39,6 +39,7 @@ public class Test4 extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    //создаем сцену и нужные элементы
     AnchorPane anchorPane = new AnchorPane();
 
     WritableImage writableImage = new WritableImage(stageWidth, stageHeight);
@@ -62,26 +63,20 @@ public class Test4 extends Application {
     divider.positionProperty().addListener((observable, oldValue, newValue) -> divider.setPosition(0.95));
     anchorPane.getChildren().add(splitPane);
 
-    System.out.println(topPane.getHeight());
-
+// создаем кнопку генерации
     Button generateNewPolygonButton = new Button("Сгенерировать");
     generateNewPolygonButton.setLayoutX(400);
     bottomPane.getChildren().add(generateNewPolygonButton);
 
-
-//    topPane.getChildren().add(imageView);
-
-
+// устанавливаем действия н клик по кнопке
     generateNewPolygonButton.setOnMouseClicked(event -> {
       topPane.getChildren().clear();
       for (int i = 0; i < writableImage.getWidth() - 1; i++) {
         for (int j = 0; j < writableImage.getHeight() - 1; j++) {
           pixelWriter.setColor(i, j, Color.WHITE);
-//              System.out.println("ima"+array[i][j]);
         }
       }
-
-
+      //генерация многоугольника
       listOfPoints = PolygonGenerator.generatePolygon();
       Polygon polygon = new Polygon();
       //добавляем точки
@@ -89,15 +84,16 @@ public class Test4 extends Application {
         polygon.getPoints().addAll(listOfPoint.getX() + Test4.coordWidth / 2, listOfPoint.getY() + Test4.coordHeight / 2);
       }
 
-      for (Point2D listOfPoint : listOfPoints) {
-        System.out.println(listOfPoint);
-      }
+//      for (Point2D listOfPoint : listOfPoints) {
+//        System.out.println(listOfPoint);
+//      }
       polygon.setStroke(Color.BLACK);
       polygon.setStrokeWidth(3);
       polygon.setFill(Color.TRANSPARENT);
 
 
       topPane.getChildren().addAll(imageView, polygon);
+
       WritableImage image = topPane.snapshot(new SnapshotParameters(), null);
       File file = new File("polygon.png");
       try {
@@ -110,25 +106,17 @@ public class Test4 extends Application {
 
 
     topPane.setOnMouseClicked(event -> {
-//              System.out.println("\nPixel color at coordinates ("
-//                      + readX + "," + readY + ") "
-//                      + color.toString());
-//              System.out.println("R = " + color.getRed());
-//              System.out.println("G = " + color.getGreen());
-//              System.out.println("B = " + color.getBlue());
-//              System.out.println("Opacity = " + color.getOpacity());
-//              System.out.println("Saturation = " + color.getSaturation());
-
-      java.awt.Color[][] array = null;
+  //массив для хранения цветов пикселей
+      java.awt.Color[][] colorsArray = null;
       if (listOfPoints.size() > 0) {
         File file1 = new File("polygon.png");
         try {
           BufferedImage image1 = ImageIO.read(file1);
-          array = new java.awt.Color[stageWidth][stageHeight];
+          colorsArray = new java.awt.Color[stageWidth][stageHeight];
           for (int i = 0; i < image1.getWidth() - 1; i++) {
             for (int j = 0; j < image1.getHeight() - 1; j++) {
-              array[i][j] = new java.awt.Color(image1.getRGB(i, j));
-//              if (array[i][j].getRGB() != -1)
+              colorsArray[i][j] = new java.awt.Color(image1.getRGB(i, j));
+//              if ((array[i][j].getRed() != 255) && (array[i][j].getGreen() != 255) && (array[i][j].getBlue() != 255))
 //                System.out.println(array[i][j].getRed() +
 //                        " " +
 //                        array[i][j].getGreen() +
@@ -136,73 +124,45 @@ public class Test4 extends Application {
             }
           }
 
-
+            //создаем стек
           Stack<Point> stack = new Stack<>();
+          // берем затравочный пискель и кладем его в стек
           Point startPoint = new Point((int) event.getX(), (int) event.getY());
-//          System.out.println(startPoint);
           stack.push(startPoint);
-          int y = 0;
-          while (!stack.isEmpty()) {
-            Point p = stack.pop();
-//            System.out.println(p);
-            array[p.x][p.y] = new java.awt.Color(0, 0, 0);
-            pixelWriter.setColor(p.x, p.y, Color.BLACK);
-//          System.out.println("RGB = "+array[p.x + 1][p.y].getRGB());
+          // проверка стека на пустоту
+          while (!stack.empty()) {
+            //вытаскиваем верхний элемент
+            Point currentPoint = stack.pop();
+            //присваиваем ему черный цвет
+            colorsArray[currentPoint.x][currentPoint.y] = new java.awt.Color(0, 0, 0);
+            //закрашиваем
+            pixelWriter.setColor(currentPoint.x, currentPoint.y, Color.BLACK);
             try {
+              //проверки являются ли пиксели справа, снизу, слева, сверху уже обработавнными(закрашенными) или нет
               //пиксел справа
-              if ((array[p.x + 1][p.y].getRed() == 255) && (array[p.x + 1][p.y].getGreen() == 255) && (array[p.x + 1][p.y].getBlue() == 255)) {
-                stack.push(new Point(p.x + 1, p.y));
-                System.out.println("1");
-//                pixelWriter.setColor(p.x, p.y, Color.BLACK);
-//                array[p.x + 1][p.y] = new java.awt.Color(0, 0, 0);
+              if ((colorsArray[currentPoint.x + 1][currentPoint.y].getRed() != 0) && (colorsArray[currentPoint.x + 1][currentPoint.y].getGreen() != 0) && (colorsArray[currentPoint.x + 1][currentPoint.y].getBlue() != 0)) {
+                stack.push(new Point(currentPoint.x + 1, currentPoint.y));
+//                System.out.println("справа");
               }
 
               //писксель снизу
-              if ((array[p.x][p.y - 1].getRed() == 255) && (array[p.x][p.y - 1].getGreen() == 255) && (array[p.x][p.y - 1].getBlue() == 255)) {
-                stack.push(new Point(p.x, p.y - 1));
-                System.out.println("2");
-//                array[p.x][p.y - 1] = new java.awt.Color(0, 0, 0);
+              if ((colorsArray[currentPoint.x][currentPoint.y - 1].getRed() != 0) && (colorsArray[currentPoint.x][currentPoint.y - 1].getGreen() != 0) && (colorsArray[currentPoint.x][currentPoint.y - 1].getBlue() != 0)) {
+                stack.push(new Point(currentPoint.x, currentPoint.y - 1));
+//                System.out.println("снизу");
               }
 
               //пиксель слева
-              if ((array[p.x - 1][p.y].getRed() == 255) && (array[p.x - 1][p.y].getGreen() == 255) && (array[p.x - 1][p.y].getBlue() == 255)) {
-                stack.push(new Point(p.x - 1, p.y));
-                System.out.println("3");
-//                array[p.x - 1][p.y] = new java.awt.Color(0, 0, 0);
+              if ((colorsArray[currentPoint.x - 1][currentPoint.y].getRed() != 0) && (colorsArray[currentPoint.x - 1][currentPoint.y].getGreen() != 0) && (colorsArray[currentPoint.x - 1][currentPoint.y].getBlue() != 0)) {
+                stack.push(new Point(currentPoint.x - 1, currentPoint.y));
+//                System.out.println("слева");
               }
 
 
               //писксель сверху
-              if ((array[p.x][p.y + 1].getRed() == 255) && (array[p.x][p.y + 1].getGreen() == 255) && (array[p.x][p.y + 1].getBlue() == 255)) {
-                stack.push(new Point(p.x, p.y + 1));
-                System.out.println("4");
-//                array[p.x][p.y + 1] = new java.awt.Color(0, 0, 0);
+              if ((colorsArray[currentPoint.x][currentPoint.y + 1].getRed() != 0) && (colorsArray[currentPoint.x][currentPoint.y + 1].getGreen() != 0) && (colorsArray[currentPoint.x][currentPoint.y + 1].getBlue() != 0)) {
+                stack.push(new Point(currentPoint.x, currentPoint.y + 1));
+//                System.out.println("сверху");
               }
-
-//              if ((array[p.x + 1][p.y + 1].getRed() == 255) && (array[p.x + 1][p.y + 1].getGreen() == 255) && (array[p.x + 1][p.y + 1].getBlue() == 255)) {
-//                stack.push(new Point(p.x+1, p.y + 1));
-//                System.out.println("5");
-////                array[p.x][p.y + 1] = new java.awt.Color(0, 0, 0);
-//              }
-//
-//              if ((array[p.x - 1][p.y - 1].getRed() == 255) && (array[p.x - 1][p.y - 1].getGreen() == 255) && (array[p.x - 1][p.y - 1].getBlue() == 255)) {
-//                stack.push(new Point(p.x-1, p.y -1));
-//                System.out.println("6");
-////                array[p.x][p.y + 1] = new java.awt.Color(0, 0, 0);
-//              }
-//
-//              if ((array[p.x - 1][p.y + 1].getRed() == 255) && (array[p.x - 1][p.y + 1].getGreen() == 255) && (array[p.x - 1][p.y + 1].getBlue() == 255)) {
-//                stack.push(new Point(p.x-1, p.y + 1));
-//                System.out.println("7");
-////                array[p.x][p.y + 1] = new java.awt.Color(0, 0, 0);
-//              }
-//
-//              if ((array[p.x + 1][p.y - 1].getRed() == 255) && (array[p.x + 1][p.y - 1].getGreen() == 255) && (array[p.x + 1][p.y - 1].getBlue() == 255)) {
-//                stack.push(new Point(p.x+1, p.y - 1));
-//                System.out.println("8");
-////                array[p.x][p.y + 1] = new java.awt.Color(0, 0, 0);
-//              }
-
 
             } catch (Exception e) {
 

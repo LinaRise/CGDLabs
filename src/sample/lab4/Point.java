@@ -1,5 +1,6 @@
 package sample.lab4;
 
+//класс для точки
 public class Point {
   public int x;
   public int y;
