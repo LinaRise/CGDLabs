@@ -14,9 +14,9 @@ filename = askopenfilename(
     filetypes=[
         ('image files', '.png'),
         ('image files', '.jpg'),
-        ('image files', '*.jpeg'),
-        ('image files', '*.webp'),
-        ('image files', '*.tiff'),
+        ('image files', '.jpeg'),
+        ('image files', '.webp'),
+        ('image files', '.tiff'),
     ])
 # считываем выбранный файл в N-мерный массив
 original_photo = cv2.imread(filename)
@@ -37,26 +37,26 @@ poisson_noise_added_photo = np.random.poisson(original_photo)
 poisson_noise_added_photo[poisson_noise_added_photo < 0] = 0
 poisson_noise_added_photo[poisson_noise_added_photo > 255] = 255
 
-# удаляем помехи при помощи винеровской фильтрации
-# wiener_filtered_photo = signal.wiener(poisson_noise_added_photo, (5, 5), 300)
-wiener_filtered_photo = signal.wiener(poisson_noise_added_photo, (5,5), 10)
+# удаляем помехи при помощи винеровской фильтрации (разные значения)
+# wiener_filtered_photo = signal.wiener(poisson_noise_added_photo, (5,5), 10)
+wiener_filtered_photo = signal.wiener(poisson_noise_added_photo, (5, 5), 400)
+# wiener_filtered_photo = signal.wiener(poisson_noise_added_photo, (5,5), 1000)
 
 # отображение исходных и обработанных изображений
 plt.figure(figsize=(13, 5))
-# для расположения в ряд
 plt.subplot(131)
 plt.imshow(original_photo, cmap=plt.cm.gray)
 # убираем оси
 plt.axis('off')
 plt.title('Оригинальное изображение')
 
-plt.subplot(232)
+plt.subplot(132)
 plt.imshow(poisson_noise_added_photo, cmap=plt.cm.gray)
 plt.title('C Пуассоновским шумом')
 plt.axis('off')
 
 
-plt.subplot(333)
+plt.subplot(133)
 plt.imshow(wiener_filtered_photo, cmap=plt.cm.gray)
 plt.axis('off')
 plt.title('После фильтра Винера')
